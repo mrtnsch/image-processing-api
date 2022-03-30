@@ -24,7 +24,7 @@ describe('Test endpoint responses', () => {
         const response = yield request.get('/api/images/?filename=encenadaport.jpg&width=200&height=200');
         expect(response.type).toBe('image/jpeg');
     }));
-    // //old test used during development
+    // //old tests used during development when sending different responses
     // it('checks if filename, height and width are read correctly when supplied correctly', async () => {
     //     const response = await request.get('/api/images/?filename=testfilename&width=200&height=200');
     //     expect(response.body.filename).toBe("testfilename");

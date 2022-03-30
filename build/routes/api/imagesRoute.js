@@ -21,7 +21,7 @@ const currentdir = __dirname;
 //helper function which gets the file name
 const getFileName = (name) => {
     try {
-        const returnName = name.slice(0, name.indexOf("."));
+        const returnName = name.slice(0, name.indexOf('.'));
         return returnName;
     }
     catch (_a) {
@@ -31,11 +31,11 @@ const getFileName = (name) => {
 //helper function which gets the file extension
 const getFileExtension = (name) => {
     try {
-        const returnName = name.substring(name.indexOf("."));
+        const returnName = name.substring(name.indexOf('.'));
         return returnName;
     }
     catch (_a) {
-        return "";
+        return '';
     }
 };
 imagesRoutes.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -49,19 +49,19 @@ imagesRoutes.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         fileExtension: getFileExtension((_c = req.query.filename) === null || _c === void 0 ? void 0 : _c.toString())
     };
     const requestedPath = path_1.default.join(__dirname, '../../../assets/full', imageProps.filename);
-    const requestedPathThumb = path_1.default.join(__dirname, '../../../assets/thumb', (imageProps.filenameWithoutExtension +
+    const requestedPathThumb = path_1.default.join(__dirname, '../../../assets/thumb', imageProps.filenameWithoutExtension +
         imageProps.width.toString() +
         imageProps.height.toString() +
-        imageProps.fileExtension));
+        imageProps.fileExtension);
     //add: if filename is not valid, then return error message
     try {
         if ((yield fs_1.promises.access(requestedPath)) != undefined) {
-            res.status(400).send("The requested image does not exist on the server.");
+            res.status(400).send('The requested image does not exist on the server.');
         }
     }
     catch (_d) {
         console.error(`User requested file "${imageProps.filename}" which does not exist on the server`);
-        res.status(400).send("The requested image does not exist on the server.");
+        res.status(400).send('The requested image does not exist on the server.');
     }
     //add: if height or width are not specificed, then return the full image
     if (!(imageProps.height && imageProps.width)) {
@@ -78,12 +78,11 @@ imagesRoutes.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         //if it does not exist, resize using sharp, save to thumb and send resized image
         (0, sharp_1.default)(requestedPath)
             .resize(imageProps.width, imageProps.height)
-            .toFile(requestedPathThumb, (err) => {
-        })
+            .toFile(requestedPathThumb, (err) => { })
             .toBuffer()
-            .then(data => res.type('jpg').send(data));
+            .then((data) => res.type('jpg').send(data));
         //unable to get the code working with this snippet, using above workaround
-        // res.status(200).sendFile(requestedPathThumb); 
+        // res.status(200).sendFile(requestedPathThumb);
     }
 }));
 exports.default = imagesRoutes;

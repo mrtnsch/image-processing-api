@@ -5,10 +5,12 @@
     "main": "index.js",
     "scripts": {
         "test": "npm run build && npm run lint && jasmine",
-        "build": "npx tsc",
+        "tsc": "npx tsc",
+        "build": "npm run lint && npm run prettier && npm run tsc",
         "prettier": "prettier --config .prettierrc src/**/*.ts --write",
         "lint": "eslint src/* --ext .ts",
-        "start:dev": "nodemon"
+        "start:dev": "nodemon",
+        "start": "node ./build/."
     },
     "author": "",
     "license": "ISC",

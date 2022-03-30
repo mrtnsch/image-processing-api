@@ -10,7 +10,7 @@ const app = (0, express_1.default)();
 const port = 3000;
 //use the routes defined in the routes folder
 app.use('/api', index_1.default);
-//set up sharp
+//image processing logic can be found in routes/api/imagesRoute
 //start the server
 app.listen(port, () => {
     console.log(`Server started and listening at port ${port}`);
