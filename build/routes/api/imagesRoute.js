@@ -56,7 +56,9 @@ imagesRoutes.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* 
     //add: if filename is not valid, then return error message
     try {
         if ((yield fs_1.promises.access(requestedPath)) != undefined) {
-            res.status(400).send('The requested image does not exist on the server.');
+            res
+                .status(400)
+                .send('The requested image does not exist on the server.');
         }
     }
     catch (_d) {
@@ -75,16 +77,8 @@ imagesRoutes.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* 
             }
         }
         catch (_e) {
-            //if it does not exist, resize using sharp, save to thumb and send resized image
+            //if it does not exist, resize using sharp function stored in utilities, save to thumb and send resized image
             (0, imageProcessing_1.default)(requestedPath, imageProps.width, imageProps.height, requestedPathThumb).then((data) => res.type('jpg').send(data));
-            //old code
-            // sharp(requestedPath)
-            //   .resize(imageProps.width, imageProps.height)
-            //   .toFile(requestedPathThumb, (err: any) => {})
-            //   .toBuffer()
-            //   .then((data) => res.type('jpg').send(data));
-            //unable to get the code working with this snippet, using above workaround
-            // res.status(200).sendFile(requestedPathThumb);
         }
     }
 }));
