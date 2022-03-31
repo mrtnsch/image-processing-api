@@ -64,25 +64,27 @@ imagesRoutes.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(400).send('The requested image does not exist on the server.');
     }
     //add: if height or width are not specificed, then return the full image
-    if (!(imageProps.height && imageProps.width)) {
+    if (isNaN(imageProps.height) || isNaN(imageProps.width)) {
         res.status(200).sendFile(requestedPath);
     }
-    //if filename is valid, and height and width are specified, check if resized image exists. if it does, send it.
-    try {
-        if ((yield fs_1.promises.access(requestedPathThumb)) == undefined) {
-            //image exists
-            res.status(200).sendFile(requestedPathThumb);
+    else {
+        //if filename is valid, and height and width are specified, check if resized image exists. if it does, send it.
+        try {
+            if ((yield fs_1.promises.access(requestedPathThumb)) == undefined) {
+                //image exists
+                res.status(200).sendFile(requestedPathThumb);
+            }
         }
-    }
-    catch (_e) {
-        //if it does not exist, resize using sharp, save to thumb and send resized image
-        (0, sharp_1.default)(requestedPath)
-            .resize(imageProps.width, imageProps.height)
-            .toFile(requestedPathThumb, (err) => { })
-            .toBuffer()
-            .then((data) => res.type('jpg').send(data));
-        //unable to get the code working with this snippet, using above workaround
-        // res.status(200).sendFile(requestedPathThumb);
+        catch (_e) {
+            //if it does not exist, resize using sharp, save to thumb and send resized image
+            (0, sharp_1.default)(requestedPath)
+                .resize(imageProps.width, imageProps.height)
+                .toFile(requestedPathThumb, (err) => { })
+                .toBuffer()
+                .then((data) => res.type('jpg').send(data));
+            //unable to get the code working with this snippet, using above workaround
+            // res.status(200).sendFile(requestedPathThumb);
+        }
     }
 }));
 exports.default = imagesRoutes;

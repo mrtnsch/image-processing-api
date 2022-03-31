@@ -62,27 +62,27 @@ imagesRoutes.get('/', async (req, res) => {
   }
 
   //add: if height or width are not specificed, then return the full image
-  if (!(imageProps.height && imageProps.width)) {
+  if (isNaN(imageProps.height) || isNaN(imageProps.width)) {
     res.status(200).sendFile(requestedPath);
-  }
+  } else {
+    //if filename is valid, and height and width are specified, check if resized image exists. if it does, send it.
+    try {
+      if ((await fs.access(requestedPathThumb)) == undefined) {
+        //image exists
+        res.status(200).sendFile(requestedPathThumb);
+      }
+    } catch {
+      //if it does not exist, resize using sharp, save to thumb and send resized image
 
-  //if filename is valid, and height and width are specified, check if resized image exists. if it does, send it.
-  try {
-    if ((await fs.access(requestedPathThumb)) == undefined) {
-      //image exists
-      res.status(200).sendFile(requestedPathThumb);
+      sharp(requestedPath)
+        .resize(imageProps.width, imageProps.height)
+        .toFile(requestedPathThumb, (err: any) => {})
+        .toBuffer()
+        .then((data) => res.type('jpg').send(data));
+
+      //unable to get the code working with this snippet, using above workaround
+      // res.status(200).sendFile(requestedPathThumb);
     }
-  } catch {
-    //if it does not exist, resize using sharp, save to thumb and send resized image
-
-    sharp(requestedPath)
-      .resize(imageProps.width, imageProps.height)
-      .toFile(requestedPathThumb, (err: any) => {})
-      .toBuffer()
-      .then((data) => res.type('jpg').send(data));
-
-    //unable to get the code working with this snippet, using above workaround
-    // res.status(200).sendFile(requestedPathThumb);
   }
 });
 
