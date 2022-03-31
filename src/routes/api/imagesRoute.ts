@@ -2,11 +2,12 @@ import express from 'express';
 import { promises as fs } from 'fs';
 import path from 'path';
 import sharp from 'sharp';
+import sharpResizeImage from '../../utilities/imageProcessing';
 const imagesRoutes = express.Router();
 const currentdir = __dirname;
 
 //helper function which gets the file name
-const getFileName = (name: string) => {
+const getFileName = (name: string): string => {
   try {
     const returnName = name.slice(0, name.indexOf('.'));
     return returnName;
@@ -15,7 +16,7 @@ const getFileName = (name: string) => {
   }
 };
 //helper function which gets the file extension
-const getFileExtension = (name: string) => {
+const getFileExtension = (name: string): string => {
   try {
     const returnName = name.substring(name.indexOf('.'));
     return returnName;
@@ -55,9 +56,6 @@ imagesRoutes.get('/', async (req, res) => {
       res.status(400).send('The requested image does not exist on the server.');
     }
   } catch {
-    console.error(
-      `User requested file "${imageProps.filename}" which does not exist on the server`
-    );
     res.status(400).send('The requested image does not exist on the server.');
   }
 
@@ -72,16 +70,13 @@ imagesRoutes.get('/', async (req, res) => {
         res.status(200).sendFile(requestedPathThumb);
       }
     } catch {
-      //if it does not exist, resize using sharp, save to thumb and send resized image
-
-      sharp(requestedPath)
-        .resize(imageProps.width, imageProps.height)
-        .toFile(requestedPathThumb, (err: any) => {})
-        .toBuffer()
-        .then((data) => res.type('jpg').send(data));
-
-      //unable to get the code working with this snippet, using above workaround
-      // res.status(200).sendFile(requestedPathThumb);
+      //if it does not exist, resize using sharp function stored in utilities, save to thumb and send resized image
+      sharpResizeImage(
+        requestedPath,
+        imageProps.width,
+        imageProps.height,
+        requestedPathThumb
+      ).then((data: any) => res.type('jpg').send(data));
     }
   }
 });

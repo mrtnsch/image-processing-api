@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const fs_1 = require("fs");
 const path_1 = __importDefault(require("path"));
-const sharp_1 = __importDefault(require("sharp"));
+const imageProcessing_1 = __importDefault(require("../../utilities/imageProcessing"));
 const imagesRoutes = express_1.default.Router();
 const currentdir = __dirname;
 //helper function which gets the file name
@@ -60,7 +60,6 @@ imagesRoutes.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
     }
     catch (_d) {
-        console.error(`User requested file "${imageProps.filename}" which does not exist on the server`);
         res.status(400).send('The requested image does not exist on the server.');
     }
     //add: if height or width are not specificed, then return the full image
@@ -77,11 +76,13 @@ imagesRoutes.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
         catch (_e) {
             //if it does not exist, resize using sharp, save to thumb and send resized image
-            (0, sharp_1.default)(requestedPath)
-                .resize(imageProps.width, imageProps.height)
-                .toFile(requestedPathThumb, (err) => { })
-                .toBuffer()
-                .then((data) => res.type('jpg').send(data));
+            (0, imageProcessing_1.default)(requestedPath, imageProps.width, imageProps.height, requestedPathThumb).then((data) => res.type('jpg').send(data));
+            //old code
+            // sharp(requestedPath)
+            //   .resize(imageProps.width, imageProps.height)
+            //   .toFile(requestedPathThumb, (err: any) => {})
+            //   .toBuffer()
+            //   .then((data) => res.type('jpg').send(data));
             //unable to get the code working with this snippet, using above workaround
             // res.status(200).sendFile(requestedPathThumb);
         }
