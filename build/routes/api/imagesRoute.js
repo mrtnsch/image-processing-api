@@ -17,7 +17,6 @@ const fs_1 = require("fs");
 const path_1 = __importDefault(require("path"));
 const imageProcessing_1 = __importDefault(require("../../utilities/imageProcessing"));
 const imagesRoutes = express_1.default.Router();
-const currentdir = __dirname;
 //helper function which gets the file name
 const getFileName = (name) => {
     try {
@@ -60,26 +59,39 @@ imagesRoutes.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 .status(400)
                 .send('The requested image does not exist on the server.');
         }
-    }
-    catch (_d) {
-        res.status(400).send('The requested image does not exist on the server.');
-    }
-    //add: if height or width are not specificed, then return the full image
-    if (isNaN(imageProps.height) || isNaN(imageProps.width)) {
-        res.status(200).sendFile(requestedPath);
-    }
-    else {
-        //if filename is valid, and height and width are specified, check if resized image exists. if it does, send it.
-        try {
-            if ((yield fs_1.promises.access(requestedPathThumb)) == undefined) {
-                //image exists
-                res.status(200).sendFile(requestedPathThumb);
+        else {
+            //if original query width and height are null, then return the full image
+            if (req.query.width == null && req.query.height == null) {
+                res.status(200).sendFile(requestedPath);
+            }
+            else {
+                //add: if height or width are <1; or either of them is NaN, return error message to user
+                if (isNaN(imageProps.height) ||
+                    isNaN(imageProps.width) ||
+                    imageProps.height < 1 ||
+                    imageProps.width < 0) {
+                    res
+                        .status(400)
+                        .send('Invalid height or width query parameters - make sure to only send numbers > 0');
+                }
+                else {
+                    //if filename is valid, and height and width are specified, check if resized image exists. if it does, send it.
+                    try {
+                        if ((yield fs_1.promises.access(requestedPathThumb)) == undefined) {
+                            //image exists
+                            res.status(200).sendFile(requestedPathThumb);
+                        }
+                    }
+                    catch (_d) {
+                        //if it does not exist, resize using sharp function stored in utilities, save to thumb and send resized image
+                        (0, imageProcessing_1.default)(requestedPath, imageProps.width, imageProps.height, requestedPathThumb).then((data) => res.type('jpg').send(data));
+                    }
+                }
             }
         }
-        catch (_e) {
-            //if it does not exist, resize using sharp function stored in utilities, save to thumb and send resized image
-            (0, imageProcessing_1.default)(requestedPath, imageProps.width, imageProps.height, requestedPathThumb).then((data) => res.type('jpg').send(data));
-        }
+    }
+    catch (_e) {
+        res.status(400).send('The requested image does not exist on the server.');
     }
 }));
 exports.default = imagesRoutes;

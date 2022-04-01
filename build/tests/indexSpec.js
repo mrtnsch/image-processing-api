@@ -33,7 +33,7 @@ describe('Test endpoint responses', () => {
         expect(response.type).toBe('image/jpeg');
     }));
     describe('Test sharp resize functionality', () => {
-        it('Calls the sharp resize function with encenadaport.jpg and checks if output is an image/data', () => __awaiter(void 0, void 0, void 0, function* () {
+        it('Calls the sharp resize function with encenadaport.jpg and checks if it creates a thumbnail', () => __awaiter(void 0, void 0, void 0, function* () {
             (0, imageProcessing_1.default)(pathToTestImage, randomHeight, randomWidth, pathToTestImageThumb).then((data) => __awaiter(void 0, void 0, void 0, function* () { return expect((yield fs_1.promises.access(pathToTestImageThumb)) == undefined).toBe(true); }));
         }));
     });
