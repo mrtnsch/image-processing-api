@@ -11,7 +11,7 @@ app.use('/api', routes);
 //image processing logic can be found in routes/api/imagesRoute
 
 //start the server
-app.listen(port, () => {
+app.listen(port, ():void => {
   console.log(`Server started and listening at port ${port}`);
 });
 
