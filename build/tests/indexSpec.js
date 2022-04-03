@@ -34,7 +34,7 @@ describe('Test endpoint responses', () => {
     }));
     describe('Test sharp resize functionality', () => {
         it('Calls the sharp resize function with encenadaport.jpg and checks if it creates a thumbnail', () => __awaiter(void 0, void 0, void 0, function* () {
-            (0, imageProcessing_1.default)(pathToTestImage, randomHeight, randomWidth, pathToTestImageThumb).then((data) => __awaiter(void 0, void 0, void 0, function* () { return expect((yield fs_1.promises.access(pathToTestImageThumb)) == undefined).toBe(true); }));
+            (0, imageProcessing_1.default)(pathToTestImage, randomHeight, randomWidth, pathToTestImageThumb).then(() => __awaiter(void 0, void 0, void 0, function* () { return expect((yield fs_1.promises.access(pathToTestImageThumb)) == undefined).toBe(true); }));
         }));
     });
     // //old tests used during development when sending different responses

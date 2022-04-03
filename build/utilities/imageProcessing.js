@@ -8,7 +8,11 @@ const sharp_1 = __importDefault(require("sharp"));
 const sharpResizeImage = (requestedPath, width, height, requestedPathThumb) => {
     return (0, sharp_1.default)(requestedPath)
         .resize(width, height)
-        .toFile(requestedPathThumb, (err) => { })
+        .toFile(requestedPathThumb, (err) => {
+        if (err)
+            console.error(err);
+        //no callback function needed
+    })
         .toBuffer();
 };
 exports.default = sharpResizeImage;

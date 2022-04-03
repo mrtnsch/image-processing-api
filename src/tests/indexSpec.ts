@@ -39,7 +39,7 @@ describe('Test endpoint responses', () => {
         randomHeight,
         randomWidth,
         pathToTestImageThumb
-      ).then(async (data: any) =>
+      ).then(async () =>
         expect((await fs.access(pathToTestImageThumb)) == undefined).toBe(true)
       );
     });

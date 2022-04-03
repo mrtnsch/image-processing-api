@@ -1,7 +1,6 @@
 import express from 'express';
 import { promises as fs } from 'fs';
 import path from 'path';
-import sharp from 'sharp';
 import sharpResizeImage from '../../utilities/imageProcessing';
 const imagesRoutes = express.Router();
 
@@ -89,7 +88,7 @@ imagesRoutes.get(
                 imageProps.width,
                 imageProps.height,
                 requestedPathThumb
-              ).then((data: any) => res.type('jpg').send(data));
+              ).then((data: Buffer) => res.type('jpg').send(data));
             }
           }
         }

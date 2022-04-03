@@ -8,7 +8,7 @@
         "tsc": "npx tsc",
         "build": "npm run lint && npm run prettier && npm run tsc",
         "prettier": "prettier --config .prettierrc src/**/*.ts --write",
-        "lint": "eslint src/* --ext .ts",
+        "lint": "eslint src/**/* --ext .ts",
         "start:dev": "nodemon",
         "start": "node ./build/."
     },

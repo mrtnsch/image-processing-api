@@ -6,10 +6,12 @@ const sharpResizeImage = (
   width: number,
   height: number,
   requestedPathThumb: string
-): Promise<{}> => {
+): Promise<Buffer> => {
   return sharp(requestedPath)
     .resize(width, height)
-    .toFile(requestedPathThumb, (err: any) => {})
+    .toFile(requestedPathThumb, (err: Error): void => {
+      if (err) console.error(err);
+    })
     .toBuffer();
 };
 
